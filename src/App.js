@@ -1,6 +1,5 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import ListBooks from './ListBooks'
 import SearchBooks from './SearchBooks'
@@ -22,25 +21,43 @@ class BooksApp extends React.Component {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
     })
-
-    console.log(this.state.books)
   }
 
+  updateShelf=(shelf,book)=>{
+
+    BooksAPI.update(book,shelf);
+    var newBooks=this.state.books.map((oldBook) => {if(oldBook.id === book.id){
+      oldBook.shelf=shelf;
+
+    }
+    return oldBook;
+
+    });
+
+  
+    this.setState({books:newBooks});
+
+
+
+    }
 
 
   render() {
+
     return (
       <div className="app">
-        <Route exact path='/search' render={() => (
+        <Route  path='/search' render={() => (
           <SearchBooks
             books={this.state.books}
+            updateShelf={this.updateShelf}
 
           />
         ) }/>
 
-        <Route path='/' render={() => (
+        <Route exact path='/' render={() => (
           <ListBooks
             books={this.state.books}
+            updateShelf={this.updateShelf}
           />
         )}/>
 

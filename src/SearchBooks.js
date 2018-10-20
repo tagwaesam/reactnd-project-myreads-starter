@@ -1,23 +1,22 @@
+
+
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import serializeForm from 'form-serialize'
+import PropTypes from 'prop-types'
+import escapeRegExp from 'escape-string-regexp'
+import sortBy from 'sort-by'
 
 
 class SearchBooks extends Component {
-   handleSubmit = (e) => {
-    e.preventDefault()
-    const values = serializeForm(e.target, { hash: true })
-    // if (this.props.onCreateContact)
-    //     this.props.onCreateContact(values)
-     }
 
 
     static propTypes = {
       books: PropTypes.array.isRequired,
-      // onDeleteContact: PropTypes.func.isRequired
+      updateShelf: PropTypes.func.isRequired
     }
     state = {
-      query: ''
+      query: '',
+      selectValue:'wantToRead'
     }
      updateQuery = (query) => {
       this.setState({ query: query.trim() })
@@ -27,17 +26,25 @@ class SearchBooks extends Component {
       this.setState({ query: '' })
     }
 
+    handleChange=(e)=>{
+
+      this.setState({selectValue:e.target.value});
+
+    }
+
+
     render() {
-      const { books } = this.props
+      const { books , updateShelf} = this.props
       const { query } = this.state
       let showingBooks
       if (query) {
         const match = new RegExp(escapeRegExp(query), 'i')
-        showingBooks = books.filter((book)=> match.test(book.name) )
+        showingBooks = books.filter((book)=> ( match.test(book.authors)  || match.test(book.title)))
       } else {
       showingBooks = books
       }
-      showingBooks.sort(sortBy('name'))
+      showingBooks.sort(sortBy('author'))
+
 
     return (
       <div className="search-books">
@@ -68,9 +75,25 @@ class SearchBooks extends Component {
         <div className="search-books-results">
           <ol className="books-grid">
             {showingBooks.map((book) => (
-
-
-
+              <li  key={book.id}>
+                <div className="book">
+                  <div className="book-top">
+                    <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+                    <div className="book-shelf-changer">
+                      <select value={book.shelf}
+                        onChange={(e)=>{ this.handleChange(e) ; updateShelf(e.target.value,book)}}>
+                        <option value="move" disabled>Move to...</option>
+                        <option value="currentlyReading" >Currently Reading</option>
+                        <option value="wantToRead" >Want to Read</option>
+                        <option value="read" >Read</option>
+                        <option value="none" >None</option>
+                       </select>
+                    </div>
+                  </div>
+                  <div className="book-title">{book.title}</div>
+                  <div className="book-authors">{book.authors}</div>
+                </div>
+              </li>
 
             ))}
           </ol>
