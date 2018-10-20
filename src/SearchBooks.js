@@ -19,7 +19,7 @@ class SearchBooks extends Component {
       selectValue:'wantToRead'
     }
      updateQuery = (query) => {
-      this.setState({ query: query.trim() })
+      this.setState({ query: query })
     }
 
     clearQuery = () => {
@@ -41,7 +41,7 @@ class SearchBooks extends Component {
         const match = new RegExp(escapeRegExp(query), 'i')
         showingBooks = books.filter((book)=> ( match.test(book.authors)  || match.test(book.title)))
       } else {
-      showingBooks = books
+      showingBooks = []
       }
       showingBooks.sort(sortBy('author'))
 
