@@ -26,6 +26,9 @@ class BooksApp extends React.Component {
   updateShelf=(shelf,book)=>{
 
     BooksAPI.update(book,shelf);
+    BooksAPI.getAll().then((books) => {
+      this.setState({ books })
+    });
     var newBooks=this.state.books.map((oldBook) => {if(oldBook.id === book.id){
       oldBook.shelf=shelf;
 
@@ -34,7 +37,7 @@ class BooksApp extends React.Component {
 
     });
 
-  
+
     this.setState({books:newBooks});
 
 
