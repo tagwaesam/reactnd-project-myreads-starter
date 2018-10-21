@@ -25,7 +25,6 @@ class SearchBooks extends Component {
     }
     state = {
       query: '',
-      selectValue:'',
       showingBooks:[]
     }
      updateQuery = (query) => {
@@ -35,13 +34,6 @@ class SearchBooks extends Component {
 
     clearQuery = () => {
       this.setState({ query: '' })
-    }
-
-    handleChange=(e)=>{
-      this.s=true;
-
-      this.setState({selectValue:e.target.value});
-
     }
 
 
@@ -67,16 +59,6 @@ class SearchBooks extends Component {
       return temp;
      }
 
-     getSelectValue=(shelf)=>{
-       if (this.state.selectValue && this.s)
-         {
-           this.s=false;
-
-           return this.selectValue;
-         }
-       else
-        return shelf;
-     }
 
      getImageURL=(book)=>
      {
@@ -198,7 +180,7 @@ console.log(newBooks);
                     <div className="book-top">
                       <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: this.getImageURL(book) }}></div>
                       <div className="book-shelf-changer">
-                        <select value={/*this.getSelectValue*/(book.shelf)}
+                        <select value={(book.shelf)}
                           onChange={(e)=>{ this.showingBooks=this.updateShelfState(this.showingBooks,books); updateShelf(e.target.value,book)}}>
                           <option value="move" disabled>Move to...</option>
                           <option value="currentlyReading" >Currently Reading</option>

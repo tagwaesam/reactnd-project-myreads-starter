@@ -9,16 +9,8 @@ class BookShelf extends Component {
     updateShelf: PropTypes.func.isRequired
   }
 
-  state = {
-    selectValue:''
 
-  }
 
-  handleChange=(e)=>{
-
-    this.setState({selectValue:e.target.value});
-
-  }
 
 
   getImageURL=(book)=>
@@ -34,12 +26,6 @@ class BookShelf extends Component {
     }
   }
 
-  getSelectValue=(shelf)=>{
-    if (this.state.selectValue)
-     return this.selectValue;
-    else
-     return shelf;
-  }
 
   render() {
     console.log("inside render shelf");
@@ -58,7 +44,7 @@ class BookShelf extends Component {
                       <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: this.getImageURL(book) }}></div>
                       <div className="book-shelf-changer">
                         <select value={book.shelf}
-                          onChange={(e)=>{updateShelf(e.target.value,book); this.handleChange(e) }}>
+                          onChange={(e)=>{updateShelf(e.target.value,book) }}>
                           <option value="move" disabled>Move to...</option>
                           <option value="currentlyReading" >Currently Reading</option>
                           <option value="wantToRead" >Want to Read</option>
