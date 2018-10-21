@@ -1,4 +1,4 @@
-
+//TODO:link dont render the route /
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
@@ -81,7 +81,7 @@ class SearchBooks extends Component {
        const { books } = this.props;
        const { query } = this.state;
 
-       let newBooks=[];
+
 
 
        if (query!==this.oldQuery && query!=="") {
@@ -113,7 +113,7 @@ console.log(newBooks);
 
          }).catch(()=>{
 
-           newBooks=[];
+           
            this.showingBooks=[];
            this.forceUpdate();
 

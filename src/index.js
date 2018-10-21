@@ -5,6 +5,10 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.render(
-  <BrowserRouter><App /></BrowserRouter>,
+  // const supportsHistory = 'pushState' in window.history
+
+  <BrowserRouter forceRefresh={true}>
+    <App />
+  </BrowserRouter>,
   document.getElementById('root')
 );
