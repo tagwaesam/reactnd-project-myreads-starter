@@ -28,7 +28,7 @@ class BookShelf extends Component {
 
 
   render() {
-    console.log("inside render shelf");
+    
     const { books , updateShelf ,bookState} = this.props
 
     return (

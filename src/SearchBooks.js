@@ -1,4 +1,4 @@
-//TODO:link dont render the route /
+
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
@@ -39,7 +39,7 @@ class SearchBooks extends Component {
 
 
     updateShelfState=(oldBooks,newBooks)=>{
-      console.log("inside updateShelfState");
+
 
       let temp=[];
       let found=false;
@@ -77,7 +77,7 @@ class SearchBooks extends Component {
 
 
      componentDidUpdate() {
-       console.log("inside componentDidMount");
+
        const { books } = this.props;
        const { query } = this.state;
 
@@ -97,8 +97,7 @@ class SearchBooks extends Component {
              if(newBooks.length!==0){
                this.showingBooks=this.updateShelfState(books,newBooks);
 
-console.log(books);
-console.log(newBooks);
+
                //sort the books
                this.showingBooks.sort(sortBy('title'));
 
@@ -113,7 +112,7 @@ console.log(newBooks);
 
          }).catch(()=>{
 
-           
+
            this.showingBooks=[];
            this.forceUpdate();
 
@@ -142,7 +141,7 @@ console.log(newBooks);
       const { updateShelf,books} = this.props;
       const { query } = this.state;
 
-      console.log("inside render list");
+      
 
 
 

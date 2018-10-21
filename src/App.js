@@ -52,7 +52,7 @@ class BooksApp extends React.Component {
 
 
   render() {
-    console.log("inside render");
+    
     return (
       <div className="app">
         <Switch>

@@ -15,7 +15,7 @@ class ListBooks extends Component {
 
 
    render() {
-console.log("inside render list");
+
     const { books , updateShelf} = this.props
     return (
 
