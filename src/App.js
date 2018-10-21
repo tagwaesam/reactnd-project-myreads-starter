@@ -23,36 +23,42 @@ class BooksApp extends React.Component {
     })
   }
 
+
   updateShelf=(shelf,book)=>{
-
+    let found=false;
     BooksAPI.update(book,shelf);
-    BooksAPI.getAll().then((books) => {
-      this.setState({ books })
-    });
-    var newBooks=this.state.books.map((oldBook) => {if(oldBook.id === book.id){
-      oldBook.shelf=shelf;
+    var newBooks=this.state.books.map((oldBook) => {
+      if(oldBook.id === book.id){
+       oldBook.shelf=shelf;
+       found=true;
+       return oldBook
+     }
+       else {
+         return oldBook;
+       }
+     }
+     );
+     //add new book to the books array
+     if (found===false)
+     {
+       newBooks.push(book);
+     }
+     //update the books array
+     this.setState({books:newBooks});
 
     }
-    return oldBook;
 
-    });
-
-
-    this.setState({books:newBooks});
-
-
-
-    }
 
 
   render() {
-
+    console.log("inside render");
     return (
       <div className="app">
         <Route  path='/search' render={() => (
           <SearchBooks
             books={this.state.books}
             updateShelf={this.updateShelf}
+
 
           />
         ) }/>

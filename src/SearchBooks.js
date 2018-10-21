@@ -15,6 +15,7 @@ class SearchBooks extends Component {
       this.showingBooks = [];
       this.i=1;
       this.oldQuery="";
+      this.s=false;
 
   }
 
@@ -37,6 +38,7 @@ class SearchBooks extends Component {
     }
 
     handleChange=(e)=>{
+      this.s=true;
 
       this.setState({selectValue:e.target.value});
 
@@ -45,23 +47,33 @@ class SearchBooks extends Component {
 
 
     updateShelfState=(oldBooks,newBooks)=>{
-      let temp=[];
+      console.log("inside updateShelfState");
 
+      let temp=[];
+      let found=false;
       temp=newBooks.map((newBook) => {oldBooks.map((oldBook)=>{
         if(newBook.id === oldBook.id){
+          found=true;
           newBook.shelf=oldBook.shelf;
           return newBook;
           }
         });
-        newBook.shelf="none";
+        if(found===false){
+          newBook.shelf="none";
+
+        }
         return newBook;
       });
       return temp;
      }
 
      getSelectValue=(shelf)=>{
-       if (this.state.selectValue)
-        return this.selectValue;
+       if (this.state.selectValue && this.s)
+         {
+           this.s=false;
+
+           return this.selectValue;
+         }
        else
         return shelf;
      }
@@ -83,6 +95,7 @@ class SearchBooks extends Component {
 
 
      componentDidUpdate() {
+       console.log("inside componentDidMount");
        const { books } = this.props;
        const { query } = this.state;
 
@@ -96,15 +109,16 @@ class SearchBooks extends Component {
          //delete the old search
          this.showingBooks=[];
          //get the new books set
-         BooksAPI.search(query).then((bks)=>{
-              newBooks=bks;
+         BooksAPI.search(query).then((newBooks)=>{
+
              //update the shelf of the new books depending on the state of the present shelf
              if(newBooks.length!==0){
                this.showingBooks=this.updateShelfState(books,newBooks);
 
-
+console.log(books);
+console.log(newBooks);
                //sort the books
-               this.showingBooks.sort(sortBy('author'))
+               this.showingBooks.sort(sortBy('title'));
 
                //to render the page
                this.setState({showingBooks:this.showingBooks});
@@ -130,7 +144,7 @@ class SearchBooks extends Component {
        //dont show box when query empty
        if(query==="" && this.oldQuery!=="" && this.i){
         this.showingBooks = [];
-        
+
         this.forceUpdate();
         //tobe sure to do it just one time
         this.i=0;
@@ -143,10 +157,10 @@ class SearchBooks extends Component {
   }//end of componentDidMount()
 
     render() {
-      const { updateShelf} = this.props;
+      const { updateShelf,books} = this.props;
       const { query } = this.state;
 
-
+      console.log("inside render list");
 
 
 
@@ -184,8 +198,8 @@ class SearchBooks extends Component {
                     <div className="book-top">
                       <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: this.getImageURL(book) }}></div>
                       <div className="book-shelf-changer">
-                        <select value={this.getSelectValue(book.shelf)}
-                          onChange={(e)=>{ this.handleChange(e) ; updateShelf(e.target.value,book)}}>
+                        <select value={/*this.getSelectValue*/(book.shelf)}
+                          onChange={(e)=>{ this.showingBooks=this.updateShelfState(this.showingBooks,books); updateShelf(e.target.value,book)}}>
                           <option value="move" disabled>Move to...</option>
                           <option value="currentlyReading" >Currently Reading</option>
                           <option value="wantToRead" >Want to Read</option>
