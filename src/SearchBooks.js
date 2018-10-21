@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import * as BooksAPI from './BooksAPI'
 
@@ -11,13 +10,20 @@ import * as BooksAPI from './BooksAPI'
 class SearchBooks extends Component {
 
 
+  constructor(props) {
+      super(props);
+      this.showingBooks = [];
+      this.i=1;
+      this.oldQuery="";
+
+  }
+
     static propTypes = {
       books: PropTypes.array.isRequired,
       updateShelf: PropTypes.func.isRequired
     }
     state = {
       query: '',
-      oldQuery:'',
       selectValue:'',
       showingBooks:[]
     }
@@ -31,7 +37,7 @@ class SearchBooks extends Component {
     }
 
     handleChange=(e)=>{
-      console.log(e.target.value);
+
       this.setState({selectValue:e.target.value});
 
     }
@@ -62,10 +68,10 @@ class SearchBooks extends Component {
 
      getImageURL=(book)=>
      {
-       
+
        if(book.hasOwnProperty('imageLinks'))
        {
-         console.log("inside image");
+
          return `url(${book.imageLinks.smallThumbnail})`;
        }
        else {
@@ -74,54 +80,62 @@ class SearchBooks extends Component {
      }
 
 
+
+
      componentDidUpdate() {
-       const { books , updateShelf} = this.props;
-       const { query,oldQuery } = this.state;
-       let showingBooks=[];
+       const { books } = this.props;
+       const { query } = this.state;
+
        let newBooks=[];
 
 
-       if (query!==oldQuery && query!=="") {
-
-
-         this.setState({showingBooks:[]});
-
+       if (query!==this.oldQuery && query!=="") {
+         this.i=1;
          //set the old oldQuery
-         this.setState({oldQuery:query});
-         console.log("q="+query)
+         this.oldQuery=query;
+         //delete the old search
+         this.showingBooks=[];
          //get the new books set
-         BooksAPI.search(query).then((books)=>{newBooks=books;
-             console.log("inside query");
-             console.log("newbook=",newBooks);
-
+         BooksAPI.search(query).then((bks)=>{
+              newBooks=bks;
              //update the shelf of the new books depending on the state of the present shelf
              if(newBooks.length!==0){
-               newBooks=this.updateShelfState(books,newBooks);
-               //console.log(newBooks);
-               const match = new RegExp(escapeRegExp(query), 'i');
-               showingBooks = newBooks.filter((book)=> ( match.test(book.authors)  || match.test(book.title)));
+               this.showingBooks=this.updateShelfState(books,newBooks);
+
+
                //sort the books
-               showingBooks.sort(sortBy('author'))
-               console.log(showingBooks);
+               this.showingBooks.sort(sortBy('author'))
+
                //to render the page
-               this.setState({showingBooks});
+               this.setState({showingBooks:this.showingBooks});
             }
             else {
-             showingBooks = [];
+             this.showingBooks = [];
+             //to render the page
+             this.setState({showingBooks:this.showingBooks});
            }
 
          }).catch(()=>{
+
            newBooks=[];
-           this.setState({showingBooks:[]});
+           this.showingBooks=[];
+           this.forceUpdate();
+
          });//end of promise
 
        }
      else
      {
 
+       //dont show box when query empty
+       if(query==="" && this.oldQuery!=="" && this.i){
+        this.showingBooks = [];
+        
+        this.forceUpdate();
+        //tobe sure to do it just one time
+        this.i=0;
 
-
-       showingBooks = [];
+      }
 
      }
 
@@ -129,11 +143,9 @@ class SearchBooks extends Component {
   }//end of componentDidMount()
 
     render() {
-      const { books , updateShelf} = this.props;
-      const { query,oldQuery ,showingBooks , selectValue } = this.state;
+      const { updateShelf} = this.props;
+      const { query } = this.state;
 
-      console.log("inside render");
-      console.log(showingBooks);
 
 
 
@@ -166,7 +178,7 @@ class SearchBooks extends Component {
           </div>
           <div className="search-books-results">
             <ol className="books-grid">
-              {showingBooks.map((book) => (
+              {this.showingBooks.map((book) => (
                 <li  key={book.id}>
                   <div className="book">
                     <div className="book-top">

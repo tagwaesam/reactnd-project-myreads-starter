@@ -11,7 +11,6 @@ To get started developing right away:
 * install all project dependencies with
 `npm install react-router-dom`
 `npm install prop-types`
-`npm install escape-string-regexp`
 `npm install sort-by`
 `npm install `
 * start the development server with `npm start`
